@@ -9,10 +9,13 @@ public class Enemy_2 : Enemy
 
     [Tooltip("Determines how much the Sine wave will ease the interpolation")]
     public float sinEccentricity = 0.6f;
+    public AnimationCurve rotCurve;
 
     [Header("Enemy_2 Private Fields")]
     [SerializeField] private float birthTime;
     [SerializeField] private Vector3 p0, p1;
+
+    private Quaternion baseRotation;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,10 @@ public class Enemy_2 : Enemy
         }
 
         birthTime = Time.time;
+
+        transform.position = p0;
+        transform.LookAt(p1, Vector3.back);
+        baseRotation = transform.rotation;
     }
 
     public override void Move(){
@@ -40,6 +47,9 @@ public class Enemy_2 : Enemy
             Destroy(this.gameObject);
             return;
         }
+
+        float shipRot = rotCurve.Evaluate( u ) * 360;
+        transform.rotation = baseRotation * Quaternion.Euler(-shipRot, 0 ,0);
 
         u = u + sinEccentricity*(Mathf.Sin(u*Mathf.PI*2));
 
