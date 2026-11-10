@@ -82,6 +82,7 @@ MonoBehaviour:
   fireRate: 0.3
   health: 10
   score: 100
+  powerUpDropChance: 0.75
   lifeTime: 5
   midpointYRange: {x: 1.5, y: 3}
   drawDebugInfo: 0
@@ -119,6 +120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showingColor: 0
   blinkCompleteTime: 0
+  ignoreOnCollisionEnter: 0
 --- !u!1001 &7235999888486783230
 PrefabInstance:
   m_ObjectHideFlags: 0
