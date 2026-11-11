@@ -12,10 +12,12 @@ public class Enemy : MonoBehaviour
 
     protected bool calledShipDestroyed = false;
     protected BoundsCheck bndCheck;
+    protected BlinkColorOnHit blinker;
 
     void Awake()
     {
         bndCheck = GetComponent<BoundsCheck>();
+        blinker = GetComponent<BlinkColorOnHit>();
     }
 
     public Vector3 pos{
@@ -50,20 +52,33 @@ public class Enemy : MonoBehaviour
 
         ProjectileHero p = otherGO.GetComponent<ProjectileHero>();
         if ( p != null ) {
-            if ( bndCheck.isOnScreen ) {
-                health -= Main.GET_WEAPON_DEFINITION( p.type ).damageOnHit;
-                if ( health <= 0 ) {
-                    if (!calledShipDestroyed) {
-                        calledShipDestroyed = true;
-                        Main.SHIP_DESTROYED( this );
-                    }
-
-                    Destroy( this.gameObject );
-                }
-            }
+            TakeDamage( Main.GET_WEAPON_DEFINITION( p.type ).damageOnHit, otherGO );
             Destroy( otherGO );
         } else {
             print( "Enemy hit by non-ProjectileHero: " + otherGO.name );
+        }
+    }
+
+    /// <summary>
+    /// Applies damage to this Enemy. Used by both projectiles (all at once)
+    /// and the laser (a small amount every frame).
+    /// </summary>
+    /// <param name="dmg">Amount of damage to apply</param>
+    /// <param name="hitGO">The specific GameObject that was hit (used by Enemy_4 for its shields)</param>
+    public virtual void TakeDamage( float dmg, GameObject hitGO = null ) {
+        // Enemies can't be damaged until they're on screen
+        if ( !bndCheck.isOnScreen ) return;
+
+        // Flash red (needed for the laser, which never triggers OnCollisionEnter)
+        if ( blinker != null ) blinker.SetColors();
+
+        health -= dmg;
+        if ( health <= 0 ) {
+            if (!calledShipDestroyed) {
+                calledShipDestroyed = true;
+                Main.SHIP_DESTROYED( this );
+            }
+            Destroy( this.gameObject );
         }
     }
 }

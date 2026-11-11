@@ -62,35 +62,38 @@ public class Enemy_4 : Enemy
         if ( p != null ) {
             Destroy( otherGO );
 
-            if ( bndCheck.isOnScreen ) {
-                GameObject hitGO = coll.contacts[0].thisCollider.gameObject;
-                if ( hitGO == otherGO ) {
-                    hitGO = coll.contacts[0].otherCollider.gameObject;
-                }
-
-                float dmg = Main.GET_WEAPON_DEFINITION( p.type ).damageOnHit;
-
-                bool shieldFound = false;
-                foreach ( EnemyShield es in allShields ) {
-                    if ( es.gameObject == hitGO ) {
-                        es.TakeDamage( dmg );
-                        shieldFound = true;
-                    }
-                }
-                if ( !shieldFound ) thisShield.TakeDamage( dmg );
-
-                if ( thisShield.isActive ) return;
-
-                if ( !calledShipDestroyed ) {
-                    Main.SHIP_DESTROYED( this ) ;
-                    calledShipDestroyed = true;
-                }
-
-                Destroy( gameObject );
+            GameObject hitGO = coll.contacts[0].thisCollider.gameObject;
+            if ( hitGO == otherGO ) {
+                hitGO = coll.contacts[0].otherCollider.gameObject;
             }
+
+            TakeDamage( Main.GET_WEAPON_DEFINITION( p.type ).damageOnHit, hitGO );
         } else {
             Debug.Log( "Enemy_4 hit by non_ProjectileHero: " + otherGO.name );
         }
+    }
+
+    // Enemy_4 routes damage through its shields instead of a single health value
+    public override void TakeDamage( float dmg, GameObject hitGO = null ) {
+        if ( !bndCheck.isOnScreen ) return;
+
+        bool shieldFound = false;
+        foreach ( EnemyShield es in allShields ) {
+            if ( es.gameObject == hitGO ) {
+                es.TakeDamage( dmg );
+                shieldFound = true;
+            }
+        }
+        if ( !shieldFound ) thisShield.TakeDamage( dmg );
+
+        if ( thisShield.isActive ) return;
+
+        if ( !calledShipDestroyed ) {
+            Main.SHIP_DESTROYED( this ) ;
+            calledShipDestroyed = true;
+        }
+
+        Destroy( gameObject );
     }
 
 }
