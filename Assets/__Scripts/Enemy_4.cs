@@ -75,6 +75,9 @@ public class Enemy_4 : Enemy
 
     // Enemy_4 routes damage through its shields instead of a single health value
     public override void TakeDamage( float dmg, GameObject hitGO = null ) {
+    
+        if ( allShields == null ) return;
+
         if ( !bndCheck.isOnScreen ) return;
 
         bool shieldFound = false;

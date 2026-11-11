@@ -34,7 +34,7 @@ public class Hero : MonoBehaviour
         //fireEvent += TempFire;
 
         ClearWeapons();
-        weapons[0].SetType(eWeaponType.blaster);
+        weapons[0].SetType(eWeaponType.laser);
     }
 
     // Update is called once per frame

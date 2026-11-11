@@ -76,6 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75423f82023670849a3b16840c5d5ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  laserWidth: 0.4
+  laserMaxDistance: 100
   _type: 0
   def:
     type: 0
